@@ -1,10 +1,13 @@
 package com.example.openeyes;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -18,8 +21,7 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(getApplicationContext(), SoundSetting.class);
-                startActivity(intent);
+                startActivity(new Intent(SettingActivity.this, SoundSetting.class));
             }
         });
 
