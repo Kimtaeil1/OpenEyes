@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "260418296510",
+    "project_id": "openeyes-1cf19",
+    "storage_bucket": "openeyes-1cf19.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260418296510:android:f73e6b93b353a654655cef",
+        "android_client_info": {
+          "package_name": "com.example.openeyes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "260418296510-bsd00s4actj3ovcg8th2jat80ho24oe8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1eWxrQo17os8sbuQ-iTKQDxUWdKc4QJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260418296510-bsd00s4actj3ovcg8th2jat80ho24oe8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
