@@ -44,17 +44,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        /**
-        Button sound_set = (Button) findViewById(R.id.sound_set);
-        sound_set.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View view){
-                Intent intent = new Intent(getApplicationContext(), SoundSetting.class);
-                startActivity(intent);
-            }
-        });*/
     }
 
 

@@ -1,14 +1,17 @@
 package com.example.openeyes;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.openeyes.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
+import com.example.openeyes.Start;
 
 public class FaceGraphic extends GraphicOverlay.Graphic{
     private static final float FACE_POSITION_RADIUS = 10.0f;
@@ -16,6 +19,7 @@ public class FaceGraphic extends GraphicOverlay.Graphic{
     private static final float ID_Y_OFFSET = 50.0f;
     private static final float ID_X_OFFSET = -50.0f;
     private static final float BOX_STROKE_WIDTH = 5.0f;
+    static Context context = Start.context;
 
     private static final int COLOR_CHOICES[] = {
             Color.BLUE,
@@ -59,7 +63,6 @@ public class FaceGraphic extends GraphicOverlay.Graphic{
         mFaceId = id;
     }
 
-
     /**
      * Updates the face instance from the detection of the most recent frame.  Invalidates the
      * relevant portions of the overlay to trigger a redraw.
@@ -74,6 +77,7 @@ public class FaceGraphic extends GraphicOverlay.Graphic{
      */
     @Override
     public void draw(Canvas canvas) {
+
         Face face = mFace;
         if (face == null) {
             return;
@@ -96,4 +100,5 @@ public class FaceGraphic extends GraphicOverlay.Graphic{
         float bottom = y + yOffset;
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
     }
+
 }

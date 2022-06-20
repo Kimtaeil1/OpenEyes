@@ -4,33 +4,53 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.example.openeyes.ui.camera.CameraSourcePreview;
 import com.example.openeyes.ui.camera.GraphicOverlay;
+import com.example.openeyes.FaceGraphic;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Start extends AppCompatActivity {
 
+
+    public static Context context;
+
     private static final String TAG = "FaceTracker";
-    private volatile Face cFace;
 
     private CameraSource mCameraSource = null;
 
@@ -39,10 +59,115 @@ public class Start extends AppCompatActivity {
 
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
+    private final String DEFAULT = "DEFAULT";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_button);
+
+        context = this.getApplicationContext();
+        Timer timer = new Timer();
+
+        createNotificationChannel(DEFAULT, "default channel", NotificationManager.IMPORTANCE_HIGH);
+
+        Intent intent = new Intent(this, Start.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        Button test_btn = (Button) findViewById(R.id.test_btn);
+
+        CountDownTimer CDT2 = new CountDownTimer(8*1000,4000) {
+            @Override
+            public void onTick(long l) {
+                new AlertDialog.Builder(Start.this)
+                        .setTitle("졸음 운전 감지")
+                        .setMessage("졸음 운전 감지 \n\n소리를 재생합니다.")
+                        .setNeutralButton("닫기", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .show();
+                createNotification(DEFAULT, 1, "졸음운전 감지", "졸음운전이 감지되었습니다.", intent);
+            }
+
+            @Override
+            public void onFinish() {
+                new AlertDialog.Builder(Start.this)
+                        .setTitle("졸음 운전 감지")
+                        .setMessage("졸음 운전 감지 \n\n소리를 재생합니다. \n\n졸음쉼터를 이용해주세요")
+                        .setNeutralButton("닫기", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .show();
+                createNotification(DEFAULT, 1, "졸음운전 감지", "졸음운전이 감지되었습니다.", intent);
+            }
+        };
+
+        CountDownTimer CDT = new CountDownTimer(12*1000,4000) {
+            @Override
+            public void onTick(long l) {
+                new AlertDialog.Builder(Start.this)
+                        .setTitle("졸음 운전 감지")
+                        .setMessage("졸음 운전 감지 \n\n소리를 재생합니다.")
+                        .setNeutralButton("닫기", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .show();
+                createNotification(DEFAULT, 1, "졸음운전 감지", "졸음운전이 감지되었습니다.", intent);
+            }
+
+            @Override
+            public void onFinish() {
+                new AlertDialog.Builder(Start.this)
+                        .setTitle("졸음 운전 감지")
+                        .setMessage("졸음 운전 감지 \n\n소리를 재생합니다. \n\n메시지를 발송합니다.")
+                        .setNeutralButton("닫기", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .show();
+                createNotification(DEFAULT, 1, "졸음운전 감지", "졸음운전이 감지되었습니다.", intent);
+                CDT2.start();
+            }
+        };
+
+        CDT.start();
+
+
+
+        test_btn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                /**int answer = a.sleepDetect(cFace);
+                switch (answer) {
+                    case 1:
+                        new AlertDialog.Builder(Start.this)
+                                .setTitle("졸음 운전 감지")
+                                .setMessage("졸음 운전 감지 \n\n소리를 재생합니다.")
+                                .setNeutralButton("닫기", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                })
+                                .show();
+                        break;
+                }**/
+
+            }
+
+        });
 
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
@@ -56,6 +181,37 @@ public class Start extends AppCompatActivity {
         }
 
 
+    }
+
+    void createNotificationChannel(String channelId, String channelName, int importance){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(new NotificationChannel(channelId, channelName, importance));
+        }
+    }
+
+    void createNotification(String channelId, int id, String title, String text, Intent intent){
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(),notification);
+        ringtone.play();
+
+        Vibrator vib = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+        vib.vibrate(new long[]{500, 500, 500, 500}, -1);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setTimeoutAfter(1000)
+                .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(id, builder.build());
     }
 
     private void requestCameraPermission() {
